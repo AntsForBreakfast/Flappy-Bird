@@ -14,12 +14,14 @@ class ScoreCounter:
         self.counter_surface: pygame.Surface = pygame.Surface((0, 0))
         self.counter: int = 0
 
-    def add_to_counter(self, digit: int = 1):
+    def add_to_counter(self, digit: int = 1) -> None:
         self.counter += digit
 
     def update(self) -> None:
+        screen_rect = pygame.display.get_surface().get_rect()
+
         # Center counter, center changes by the digit number
-        self.position.x = pygame.display.get_surface().get_rect().centerx - (
+        self.position.x = screen_rect.centerx - (
             self.sprite_size.x * len(str(self.counter)) / 2
         )
 
