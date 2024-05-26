@@ -10,7 +10,6 @@ pygame.init()
 
 class Main:
     def __init__(self) -> None:
-        # 288, 512
         self.screen = pygame.display.set_mode((288, 512))
         pygame.display.set_caption("Flappy Bird")
         self.asset_manager = assets_manager.AssetsManager()
