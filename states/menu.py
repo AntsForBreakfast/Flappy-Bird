@@ -9,6 +9,7 @@ class Menu(State):
     def __init__(
         self, state_machine: StateMachine, assets_manager: AssetsManager
     ) -> None:
+        # Parameters
         self.state_machine: StateMachine = state_machine
         self.assets_manager: AssetsManager = assets_manager
 
