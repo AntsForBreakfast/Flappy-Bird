@@ -5,8 +5,8 @@ import pygame
 from assets_manager import AssetsManager
 from state_machine import StateMachine, State
 from score_counter import ScoreCounter
-from pipe import Pipe
-from bird import Bird
+from assets.objects.pipe import Pipe
+from assets.objects.bird import Bird
 
 
 class Game(State):
