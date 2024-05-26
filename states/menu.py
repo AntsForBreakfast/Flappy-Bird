@@ -16,7 +16,7 @@ class Menu(State):
         self.sprite_backgroud_day: pygame.Surface = self.assets_manager.sprites.get(
             "background-day"
         )
-        self.sprite_base: pygame.Surface = self.assets_manager.sprites.get("base")
+        self.sprite_platform: pygame.Surface = self.assets_manager.sprites.get("base")
         self.sprite_message: pygame.Surface = self.assets_manager.sprites.get("message")
 
         # Sprites positions
@@ -36,5 +36,5 @@ class Menu(State):
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
-        screen.blit(self.sprite_base, self.rect_sprite_base)
+        screen.blit(self.sprite_platform, self.rect_sprite_base)
         screen.blit(self.sprite_message, self.rect_sprite_message)
