@@ -39,9 +39,8 @@ class Bird:
         self.velocity_bird += self.GRAVITY * delta_time
 
     def process_event(self, event: pygame.Event) -> None:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                self.flap()
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            self.flap()
 
     def update(self, delta_time: float) -> None:
         self.falling(delta_time=delta_time)
