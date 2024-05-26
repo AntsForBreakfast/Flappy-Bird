@@ -44,8 +44,8 @@ class Bird:
 
     def update(self, delta_time: float) -> None:
         self.falling(delta_time=delta_time)
-        self.rotating(delta_time=delta_time)
         self.animate(delta_time=delta_time)
+        self.rotating(delta_time=delta_time)
 
         # Updating the bird center position
         self.rect = self.sprite.get_rect(center=self.position_bird)
