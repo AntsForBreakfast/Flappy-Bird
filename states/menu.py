@@ -21,7 +21,9 @@ class Menu(State):
 
         # Sprites positions
         self.rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
-        self.rect_sprite_base: pygame.Rect = self.sprite_base.get_rect().move(0, 400)
+        self.rect_sprite_platform: pygame.Rect = self.sprite_platform.get_rect().move(
+            0, 400
+        )
         self.rect_sprite_message: pygame.Rect = self.sprite_message.get_rect(
             center=self.rect_screen.center
         )
@@ -36,5 +38,5 @@ class Menu(State):
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
-        screen.blit(self.sprite_platform, self.rect_sprite_base)
+        screen.blit(self.sprite_platform, self.rect_sprite_platform)
         screen.blit(self.sprite_message, self.rect_sprite_message)
