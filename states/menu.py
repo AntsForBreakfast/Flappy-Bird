@@ -3,6 +3,7 @@ import pygame
 from assets_manager import AssetsManager
 from state_machine import State, StateMachine
 from states.game import Game
+from assets.objects.platform import Platform
 
 
 class Menu(State):
@@ -13,20 +14,19 @@ class Menu(State):
         self.state_machine: StateMachine = state_machine
         self.assets_manager: AssetsManager = assets_manager
 
-        # Sprites
+        # Attributes
+        _rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
         self.sprite_backgroud_day: pygame.Surface = self.assets_manager.sprites.get(
             "background-day"
         )
-        self.sprite_platform: pygame.Surface = self.assets_manager.sprites.get("base")
         self.sprite_message: pygame.Surface = self.assets_manager.sprites.get("message")
-
-        # Sprites positions
-        self.rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
-        self.rect_sprite_platform: pygame.Rect = self.sprite_platform.get_rect().move(
-            0, 400
-        )
         self.rect_sprite_message: pygame.Rect = self.sprite_message.get_rect(
-            center=self.rect_screen.center
+            center=_rect_screen.center
+        )
+
+        self.platform = Platform(
+            position=pygame.math.Vector2(0, 400),
+            sprite=self.assets_manager.sprites.get("base"),
         )
 
     def process_event(self, event: pygame.Event) -> None:
@@ -39,5 +39,5 @@ class Menu(State):
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
-        screen.blit(self.sprite_platform, self.rect_sprite_platform)
+        self.platform.render(screen=screen)
         screen.blit(self.sprite_message, self.rect_sprite_message)

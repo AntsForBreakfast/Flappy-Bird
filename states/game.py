@@ -7,6 +7,7 @@ from state_machine import StateMachine, State
 from score_counter import ScoreCounter
 from assets.objects.pipe import Pipe
 from assets.objects.bird import Bird
+from assets.objects.platform import Platform
 
 
 class Game(State):
@@ -16,51 +17,50 @@ class Game(State):
         self.state_machine: StateMachine = state_machine
         self.assets_manager: AssetsManager = assets_manager
 
-        self.platform_velocity: pygame.Vector2 = pygame.math.Vector2(100, 0)
         self.pipe_gap: pygame.Vector2 = pygame.math.Vector2(100, 100)
-
         self.score_counter = ScoreCounter(sprites=self.assets_manager.sprites["digits"])
+
         # Sprites
         self.sprite_backgroud_day: pygame.Surface = self.assets_manager.sprites[
             "background-day"
         ]
-        self.sprite_platform: pygame.Surface = self.assets_manager.sprites["base"]
         self.sprites_pipe: dict[str : pygame.Surface] = self.assets_manager.sprites[
             "pipes"
         ]
         self.sprites_bird: dict[str : dict[str : pygame.Surface]] = (
             self.assets_manager.sprites["birds"]
         )
-
-        # Sprites positions
-        self.vector_platform_1: pygame.Vector2 = pygame.math.Vector2(0, 400)
-        self.vector_platform_2: pygame.Vector2 = pygame.math.Vector2(
-            self.sprite_platform.get_width(), 400
-        )
+        self.sprite_platform: pygame.Surface = self.assets_manager.sprites["base"]
 
         # Objects
         self.pipe_group: pygame.sprite.Group = pygame.sprite.Group()
+        _platform_1 = Platform(
+            position=pygame.math.Vector2(0, 400),
+            sprite=self.sprite_platform,
+            velocity=pygame.math.Vector2(100, 0),
+        )
+        _platform_2 = Platform(
+            position=pygame.math.Vector2(self.sprite_platform.get_width(), 400),
+            sprite=self.sprite_platform,
+            velocity=pygame.math.Vector2(100, 0),
+        )
+        self.platform_group: pygame.sprite.Group = pygame.sprite.Group(
+            (_platform_1, _platform_2)
+        )
+        self.collision_group: pygame.sprite.Group = pygame.sprite.Group()
         self.bird = Bird(sprites=self.sprites_bird["blue"])
 
         # Test
         self.game_state = "running"
-
-    def move_platforms(self, delta_time):
-        screen = pygame.display.get_surface().get_rect()
-        if self.vector_platform_1.x < -self.sprite_platform.get_width():
-            self.vector_platform_1.x = screen.w
-        if self.vector_platform_2.x < -self.sprite_platform.get_width():
-            self.vector_platform_2.x = screen.w
-        self.vector_platform_1.x -= self.platform_velocity.x * delta_time
-        self.vector_platform_2.x -= self.platform_velocity.x * delta_time
 
     def process_event(self, event: pygame.Event) -> None:
         self.bird.process_event(event=event)
 
     def update(self, delta_time: float) -> None:
         screen = pygame.display.get_surface().get_rect()
-        self.move_platforms(delta_time=delta_time)
+
         self.pipe_group.update(delta_time=delta_time)
+        self.platform_group.update(delta_time=delta_time)
 
         # For first launching since the pipe_group is empty
         try:
@@ -99,12 +99,14 @@ class Game(State):
                 removed += 1
         self.score_counter.add_to_counter(round(removed / 2))
 
+        self.collision_group = pygame.sprite.Group(
+            (self.platform_group, self.pipe_group)
+        )
+
         # Bird logic
         self.bird.update(delta_time=delta_time)
 
-        if self.bird.rect.y >= self.vector_platform_1.y or pygame.sprite.spritecollide(
-            sprite=self.bird, group=self.pipe_group, dokill=False
-        ):
+        if pygame.sprite.spritecollideany(sprite=self.bird, group=self.collision_group):
             self.game_state = "Lost"
 
         self.score_counter.update()
@@ -112,8 +114,7 @@ class Game(State):
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
 
-        self.bird.render(screen=screen)
         self.pipe_group.draw(surface=screen)
-        screen.blit(self.sprite_platform, self.vector_platform_1)
-        screen.blit(self.sprite_platform, self.vector_platform_2)
         self.score_counter.render(screen=screen)
+        self.bird.render(screen=screen)
+        self.platform_group.draw(surface=screen)
