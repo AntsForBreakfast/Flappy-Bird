@@ -4,7 +4,7 @@ import pygame
 
 from assets_manager import AssetsManager
 from state_machine import StateMachine, State
-from score_counter import ScoreCounter
+from widgets import ScoreCounter
 from assets.objects.pipe import Pipe
 from assets.objects.bird import Bird
 from assets.objects.platform import Platform
@@ -101,6 +101,8 @@ class Game(State):
 
     def game_over(self) -> None:
         self.next_state()
+
+    def reset(self) -> None: ...
 
     def process_event(self, event: pygame.Event) -> None:
         if self.state == "running":
