@@ -4,7 +4,8 @@ import pygame
 
 from assets_manager import AssetsManager
 from state_machine import StateMachine, State
-from widgets import ScoreCounter
+from states import menu
+from widgets import ScoreCounter, Button
 from assets.objects.pipe import Pipe
 from assets.objects.bird import Bird
 from assets.objects.platform import Platform
@@ -19,10 +20,32 @@ class Game(State):
         self.assets_manager: AssetsManager = assets_manager
 
         # Attributes
-        self.states = {"running": "gameover", "gameover": "running"}
+        self.states = {"running": "gameover"}
         self.state = "running"
         self.rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
         self.pipe_gap: pygame.Vector2 = pygame.math.Vector2(100, 100)
+        self.button_restart: Button = Button(
+            text="restart",
+            font=pygame.font.SysFont("Arial", 20),
+            position=pygame.math.Vector2(77, 460),
+            size=pygame.math.Vector2(100, 30),
+            elevation=6,
+            text_color=(84, 52, 68),
+            bg_color=(255, 136, 44),
+            shadow_color=(228, 100, 20),
+            method=self.reset,
+        )
+        self.button_exit: Button = Button(
+            text="exit",
+            font=pygame.font.SysFont("Arial", 20),
+            position=pygame.math.Vector2(221, 460),
+            size=pygame.math.Vector2(100, 30),
+            elevation=6,
+            text_color=(84, 52, 68),
+            bg_color=(255, 136, 44),
+            shadow_color=(228, 100, 20),
+            method=lambda: pygame.quit(),
+        )
 
         # Sprites
         self.sprite_backgroud_day: pygame.Surface = self.assets_manager.sprites[
@@ -102,19 +125,18 @@ class Game(State):
     def game_over(self) -> None:
         self.next_state()
 
-    def reset(self) -> None: ...
+    def reset(self) -> None:
+        self.state_machine.switch(state=menu.Menu)
 
     def process_event(self, event: pygame.Event) -> None:
         if self.state == "running":
             self.bird.process_event(event=event)
+        else:
+            self.button_restart.process_event(event=event)
+            self.button_exit.process_event(event=event)
 
     def update(self, delta_time: float) -> None:
         self.bird.update(delta_time=delta_time)
-
-        # Making sure the bird is above platform
-        for platform in self.platform_group:
-            if self.bird.rect.bottom > platform.rect.top:
-                self.bird.rect.bottom = platform.rect.top
 
         if self.state == "running":
             # Updating groups
@@ -146,6 +168,14 @@ class Game(State):
 
             # Update score counter
             self.score_counter.update()
+        else:
+            self.button_restart.update()
+            self.button_exit.update()
+
+        # Making sure the bird is above platform
+        for platform in self.platform_group:
+            if self.bird.rect.bottom > platform.rect.top:
+                self.bird.rect.bottom = platform.rect.top
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
@@ -157,3 +187,5 @@ class Game(State):
 
         if self.state == "gameover":
             screen.blit(self.sprite_gameover, self.rect_sprite_gameover)
+            self.button_restart.render(screen=screen)
+            self.button_exit.render(screen=screen)

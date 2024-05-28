@@ -2,7 +2,7 @@ import pygame
 
 from assets_manager import AssetsManager
 from state_machine import State, StateMachine
-from states.game import Game
+from states import game
 from assets.objects.platform import Platform
 
 
@@ -32,7 +32,7 @@ class Menu(State):
     def process_event(self, event: pygame.Event) -> None:
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
-                self.state_machine.switch(Game)
+                self.state_machine.switch(state=game.Game)
 
     def update(self, delta_time: float) -> None:
         pass
