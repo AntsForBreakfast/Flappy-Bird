@@ -10,7 +10,7 @@ class Pipe(pygame.sprite.Sprite):
         self.velocity: pygame.Vector2 = velocity
         self.image: pygame.Surface = sprite
 
-        self.rect: pygame.Rect = self.image.get_frect(topleft=self.position)
+        self.rect: pygame.Rect = self.image.get_rect(topleft=self.position)
 
     def update(self, delta_time: float) -> None:
         # Pipe movement right to left

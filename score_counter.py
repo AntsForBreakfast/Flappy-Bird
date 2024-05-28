@@ -7,12 +7,12 @@ class ScoreCounter:
         self.sprites: dict[str : pygame.Surface] = sprites
 
         # Attributes
+        self.counter: int = 0
+        self.position: pygame.Vector2 = pygame.math.Vector2(0, 20)
         self.sprite_size: pygame.Vector2 = pygame.math.Vector2(
             self.sprites["0"].get_size()
         )
-        self.position: pygame.Vector2 = pygame.math.Vector2(0, 20)
         self.counter_surface: pygame.Surface = pygame.Surface((0, 0))
-        self.counter: int = 0
 
     def add_to_counter(self, digit: int = 1) -> None:
         self.counter += digit

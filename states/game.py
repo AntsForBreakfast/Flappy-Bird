@@ -58,12 +58,12 @@ class Game(State):
         self.score_counter = ScoreCounter(sprites=sprites_digit)
 
         # Initalizing
-        self.add_pipes()
+        self.add_pipes_to_group()
 
         # Test
         self.game_state = "running"
 
-    def add_pipes(self) -> None:
+    def add_pipes_to_group(self) -> None:
         sprite_pipe = self.sprites_pipe["green"]
         min_h = sprite_pipe.get_height()
         max_h = self.screen_rect.h - sprite_pipe.get_height()
@@ -85,7 +85,7 @@ class Game(State):
 
         self.pipe_group.add([pipe_obj_1, pipe_obj_2])
 
-    def remove_pipes(self):
+    def remove_pipes_from_group(self) -> None:
         for pipe in self.pipe_group:
             if pipe.rect.right <= 0:
                 self.pipe_group.remove(pipe)
@@ -99,24 +99,31 @@ class Game(State):
         self.platform_group.update(delta_time=delta_time)
 
         # Add new pipe
-        last_sprite = self.pipe_group.sprites()[-1]
-        if last_sprite.rect.right + self.pipe_gap.x < self.screen_rect.right:
-            self.add_pipes()
+        grp_sprites = self.pipe_group.sprites()
+        if grp_sprites[-1].rect.right + self.pipe_gap.x < self.screen_rect.right:
+            self.add_pipes_to_group()
 
         # Removes all the pipes of the screen
-        self.remove_pipes()
+        self.remove_pipes_from_group()
 
         # Creating group for collision checking with a bird
         self.collision_group = pygame.sprite.Group(
             (self.platform_group, self.pipe_group)
         )
 
-        # Updaing the bird
+        # Updating the bird
         self.bird.update(delta_time=delta_time)
 
         # Collision logic
         if pygame.sprite.spritecollideany(sprite=self.bird, group=self.collision_group):
             self.game_state = "Lost"
+
+        # Add score
+        if self.bird.rect.centerx == self.pipe_group.sprites()[0].rect.centerx:
+            self.score_counter.add_to_counter()
+
+        # Update score counter
+        self.score_counter.update()
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))
