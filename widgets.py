@@ -15,6 +15,7 @@ class Button:
         bg_color: rgb,
         shadow_color: rgb,
         method: callable,
+        audio: pygame.mixer.Sound,
     ) -> None:
         self.text: str = text
         self.font: pygame.Font = font
@@ -25,6 +26,7 @@ class Button:
         self.bg_color: rgb = bg_color
         self.shadow_color: rgb = shadow_color
         self.method: callable = method
+        self.audio: pygame.mixer.Sound = audio
 
         self.pressed: bool = False
         self.dynamic_elevation: int = elevation
@@ -54,6 +56,7 @@ class Button:
                 and self.top_rect.collidepoint(event.pos)
                 and self.pressed
             ):
+                self.audio.play()
                 self.method()
             self.pressed = False
             self.dynamic_elevation = self.elevation
@@ -80,10 +83,16 @@ class Button:
         screen.blit(source=self.text_surface, dest=self.text_rect)
 
 
+type ScoringAudio = pygame.mixer.Sound
+
+
 class ScoreCounter:
-    def __init__(self, sprites: dict[str : pygame.Surface]) -> None:
+    def __init__(
+        self, sprites: dict[str : pygame.Surface], audio: ScoringAudio
+    ) -> None:
         # Parameters
         self.sprites: dict[str : pygame.Surface] = sprites
+        self.audio: ScoringAudio = audio
 
         # Attributes
         self.counter: int = 0
@@ -94,6 +103,7 @@ class ScoreCounter:
         self.counter_surface: pygame.Surface = pygame.Surface((0, 0))
 
     def add_to_counter(self, digit: int = 1) -> None:
+        self.audio.play()
         self.counter += digit
 
     def update(self) -> None:

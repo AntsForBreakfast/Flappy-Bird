@@ -1,14 +1,17 @@
 import pygame
 
+type FlapSound = pygame.mixer.Sound
+
 
 class Bird:
-    def __init__(self, sprites: dict[str : pygame.Surface]) -> None:
+    def __init__(self, sprites: dict[str : pygame.Surface], audio: FlapSound) -> None:
         # Parameters
         self.sprites: list[pygame.Surface] = list(sprites.values())
+        self.audio: FlapSound = audio
 
         # Attributes
-        self.GRAVITY: float = 1000
-        self.FLAP_FORCE: int = 300
+        self.GRAVITY: float = 700
+        self.FLAP_FORCE: int = 250
         self.velocity_bird: float = 0
         self.animation_speed: float = 8
         self.animation_index: int = 0
@@ -31,6 +34,7 @@ class Bird:
         self.sprite = pygame.transform.rotate(self.sprite, self.angle_bird)
 
     def flap(self) -> None:
+        self.audio.play()
         self.velocity_bird = -self.FLAP_FORCE
         self.angle_bird = 60
 

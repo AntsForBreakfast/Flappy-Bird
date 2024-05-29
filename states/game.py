@@ -35,6 +35,7 @@ class Game(State):
             bg_color=(255, 136, 44),
             shadow_color=(228, 100, 20),
             method=self.reset,
+            audio=self.assets_manager.audio["swoosh"],
         )
         self.button_exit: Button = Button(
             text="exit",
@@ -45,7 +46,8 @@ class Game(State):
             text_color=(84, 52, 68),
             bg_color=(255, 136, 44),
             shadow_color=(228, 100, 20),
-            method=self.exit,
+            method=self.exiting,
+            audio=self.assets_manager.audio["swoosh"],
         )
 
         # Sprites
@@ -87,8 +89,12 @@ class Game(State):
         )
 
         # Objects
-        self.bird = Bird(sprites=sprites_bird["blue"])
-        self.score_counter = ScoreCounter(sprites=sprites_digit)
+        self.bird = Bird(
+            sprites=sprites_bird["red"], audio=self.assets_manager.audio["wing"]
+        )
+        self.score_counter = ScoreCounter(
+            sprites=sprites_digit, audio=self.assets_manager.audio["point"]
+        )
 
         # Initalizing
         self.add_pipes_to_group()
@@ -126,7 +132,7 @@ class Game(State):
     def reset(self) -> None:
         self.state_machine.switch(state=menu.Menu)
 
-    def exit(self) -> None:
+    def exiting(self) -> None:
         self.running = 0
 
     def process_event(self, event: pygame.Event) -> None:
@@ -161,6 +167,8 @@ class Game(State):
             if pygame.sprite.spritecollideany(
                 sprite=self.bird, group=self.collision_group
             ):
+                self.assets_manager.audio["hit"].play()
+                self.assets_manager.audio["die"].play()
                 self.next_state()
 
             # Add score
