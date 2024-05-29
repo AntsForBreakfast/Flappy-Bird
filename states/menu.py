@@ -34,8 +34,8 @@ class Menu(State):
             if event.button == 1:
                 self.state_machine.switch(state=game.Game)
 
-    def update(self, delta_time: float) -> None:
-        pass
+    def update(self, delta_time: float) -> int:
+        return 1
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))

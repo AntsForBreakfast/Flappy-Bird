@@ -20,8 +20,9 @@ class Game(State):
         self.assets_manager: AssetsManager = assets_manager
 
         # Attributes
-        self.states = {"running": "gameover"}
-        self.state = "running"
+        self.running: int = 1
+        self.states: dict[str:str] = {"running": "gameover"}
+        self.state: str = "running"
         self.rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
         self.pipe_gap: pygame.Vector2 = pygame.math.Vector2(100, 100)
         self.button_restart: Button = Button(
@@ -44,7 +45,7 @@ class Game(State):
             text_color=(84, 52, 68),
             bg_color=(255, 136, 44),
             shadow_color=(228, 100, 20),
-            method=lambda: pygame.quit(),
+            method=self.exit,
         )
 
         # Sprites
@@ -122,11 +123,11 @@ class Game(State):
     def next_state(self) -> None:
         self.state = self.states[self.state]
 
-    def game_over(self) -> None:
-        self.next_state()
-
     def reset(self) -> None:
         self.state_machine.switch(state=menu.Menu)
+
+    def exit(self) -> None:
+        self.running = 0
 
     def process_event(self, event: pygame.Event) -> None:
         if self.state == "running":
@@ -135,7 +136,7 @@ class Game(State):
             self.button_restart.process_event(event=event)
             self.button_exit.process_event(event=event)
 
-    def update(self, delta_time: float) -> None:
+    def update(self, delta_time: float) -> int:
         self.bird.update(delta_time=delta_time)
 
         if self.state == "running":
@@ -160,7 +161,7 @@ class Game(State):
             if pygame.sprite.spritecollideany(
                 sprite=self.bird, group=self.collision_group
             ):
-                self.game_over()
+                self.next_state()
 
             # Add score
             if self.bird.rect.centerx == self.pipe_group.sprites()[0].rect.centerx:
@@ -176,6 +177,8 @@ class Game(State):
         for platform in self.platform_group:
             if self.bird.rect.bottom > platform.rect.top:
                 self.bird.rect.bottom = platform.rect.top
+
+        return self.running
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite_backgroud_day, (0, 0))

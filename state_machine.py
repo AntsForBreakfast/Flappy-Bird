@@ -36,8 +36,9 @@ class StateMachine:
     def process_event(self, event: pygame.Event) -> None:
         self.state.process_event(event=event)
 
-    def update(self, delta_time: float) -> None:
-        self.state.update(delta_time)
+    def update(self, delta_time: float) -> int:
+        running = self.state.update(delta_time)
+        return running
 
     def render(self, screen: pygame.Surface) -> None:
         screen.fill("black")

@@ -28,7 +28,10 @@ class Main:
                 self.state_machine.process_event(event=event)
                 if event.type == pygame.QUIT:
                     self.running = False
-            self.state_machine.update(delta_time=delta_time)
+                    continue
+            running = self.state_machine.update(delta_time=delta_time)
+            if not running:
+                self.running = False
             self.state_machine.render(screen=self.screen)
 
             pygame.display.flip()

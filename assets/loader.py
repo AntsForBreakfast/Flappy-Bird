@@ -4,7 +4,12 @@ import pathlib
 type NestedDict = dict[str, pygame.Surface | "NestedDict"]
 
 
-def load_audio(): ...
+def load_audio() -> dict[str : pygame.mixer.Sound]:
+    path = pathlib.Path(r"assets\audio")
+    audio = {}
+    for audio_path in path.glob("*.wav"):
+        audio[audio_path.stem] = pygame.mixer.Sound(file=audio_path)
+    return audio
 
 
 def load_sprites() -> NestedDict:
