@@ -21,7 +21,7 @@ class Game(State):
 
         # Attributes
         self.running: int = 1
-        self.states: dict[str:str] = {"running": "gameover"}
+        self.states: dict[str, str] = {"running": "gameover"}
         self.state: str = "running"
         self.rect_screen: pygame.Rect = pygame.display.get_surface().get_rect()
         self.pipe_gap: pygame.Vector2 = pygame.math.Vector2(100, 100)
@@ -54,15 +54,15 @@ class Game(State):
         self.sprite_backgroud_day: pygame.Surface = self.assets_manager.sprites[
             "background-day"
         ]
-        self.sprites_pipe: dict[str : pygame.Surface] = self.assets_manager.sprites[
+        self.sprites_pipe: dict[str, pygame.Surface] = self.assets_manager.sprites[
             "pipes"
         ]
         self.sprite_gameover: pygame.Surface = self.assets_manager.sprites["gameover"]
-        sprites_bird: dict[str : dict[str : pygame.Surface]] = (
+        sprites_bird: dict[str, dict[str, pygame.Surface]] = (
             self.assets_manager.sprites["birds"]
         )
         sprite_platform: pygame.Surface = self.assets_manager.sprites["base"]
-        sprites_digit: dict[str : pygame.Surface] = self.assets_manager.sprites[
+        sprites_digit: dict[str, pygame.Surface] = self.assets_manager.sprites[
             "digits"
         ]
 
