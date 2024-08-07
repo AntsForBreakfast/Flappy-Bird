@@ -88,10 +88,10 @@ type ScoringAudio = pygame.mixer.Sound
 
 class ScoreCounter:
     def __init__(
-        self, sprites: dict[str : pygame.Surface], audio: ScoringAudio
+        self, sprites: dict[str, pygame.Surface], audio: ScoringAudio
     ) -> None:
         # Parameters
-        self.sprites: dict[str : pygame.Surface] = sprites
+        self.sprites: dict[str, pygame.Surface] = sprites
         self.audio: ScoringAudio = audio
 
         # Attributes
